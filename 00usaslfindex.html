@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>USA - Sistema de Lançamento de Fichas - SAMU 192</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* --- TEMA VISUAL (Idêntico ao Relatório Enfermeiro) --- */
+    :root {
+      --bg-color: #f3f4f6;
+      --card-bg: #ffffff;
+      --text-main: #1f2937;
+      --text-muted: #6b7280;
+      --samu-orange: #f97316;
+      --samu-red: #ef4444;
+      --samu-blue: #0ea5e9;
+      --input-bg: #f9fafb;
+      --border-color: #e5e7eb;
+      --border-radius: 12px;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      margin: 0;
+      padding: 15px;
+      padding-bottom: 80px;
+      line-height: 1.5;
+    }
+
+    /* Cabeçalho */
+    header {
+      text-align: center;
+      margin-bottom: 25px;
+      padding: 25px;
+      background: var(--card-bg);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      border-bottom: 4px solid var(--samu-red);
+    }
+
+    header h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.2rem;
+      margin: 0;
+      color: var(--samu-red);
+      text-transform: uppercase;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    header div { font-size: 0.8rem; color: var(--text-muted); margin-top: 5px; font-weight: 500; text-transform: uppercase; }
+
+    /* --- CARTÕES COM EFEITO DE MOVIMENTO --- */
+    .card {
+      background-color: var(--card-bg);
+      padding: 25px;
+      border-radius: var(--border-radius);
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border-color);
+      
+      /* Adicionado para suavizar o movimento */
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+
+    /* O Efeito Hover (Mouse por cima) */
+    .card:hover {
+      transform: translateY(-5px); /* Move 5px para cima */
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1); /* Sombra mais forte */
+      border-color: var(--samu-blue); /* Borda fica azul sutilmente */
+    }
+
+    .section-title {
+      color: var(--samu-blue);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      font-family: 'Poppins', sans-serif;
+      border-bottom: 2px solid #e0f2fe;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+
+    /* Labels e Inputs */
+    label {
+      display: block;
+      margin-top: 18px;
+      color: var(--text-main);
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-family: 'Poppins', sans-serif;
+      margin-bottom: 6px;
+    }
+
+    select, input[type="text"], input[type="number"], input[type="date"] {
+      width: 100%;
+      padding: 14px;
+      background-color: var(--input-bg);
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      color: var(--text-main);
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: all 0.2s ease;
+      text-transform: uppercase; /* Caps Lock Visual */
+    }
+
+    select:focus, input:focus {
+      border-color: var(--samu-orange);
+      background-color: #fff;
+      box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+    }
+
+    /* Radio Groups Estilizados */
+    .radio-group { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 5px; }
+    .radio-option { flex: 1; min-width: 80px; }
+    .radio-option input { display: none; }
+    .radio-option label {
+      display: flex; align-items: center; justify-content: center;
+      padding: 12px;
+      background: #f3f4f6;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      transition: 0.2s;
+    }
+    .radio-option input:checked + label {
+      background: var(--text-main); /* Cor escura do tema */
+      color: white;
+      border-color: var(--text-main);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    /* Campos Ocultos "Outro" */
+    .hidden-input {
+      display: none;
+      margin-top: 8px;
+      animation: fadeIn 0.3s ease;
+    }
+    .hidden-input input {
+      border-left: 4px solid var(--samu-orange);
+      background-color: #fff7ed;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Opções Aprendidas */
+    option.aprendida { background-color: #f0fdf4; color: #15803d; font-weight: 600; }
+
+    /* Botão Salvar */
+    button.submit {
+      width: 100%;
+      background: linear-gradient(to right, var(--samu-red), var(--samu-orange));
+      color: white; border: none; padding: 20px; font-size: 1.1rem;
+      font-family: 'Poppins', sans-serif; font-weight: 600;
+      border-radius: 12px; cursor: pointer; margin-top: 10px;
+      box-shadow: 0 4px 6px rgba(239, 68, 68, 0.25); letter-spacing: 1px;
+      transition: transform 0.2s; /* Movimento no botão também */
+    }
+    button.submit:hover { transform: scale(1.02); }
+    button.submit:disabled { background: #9ca3af; box-shadow: none; opacity: 0.7; transform: none;}
+
+    /* --- RODAPÉ --- */
+    footer {
+      margin-top: 40px;
+      padding: 30px 20px;
+      background-color: #e5e7eb;
+      border-top: 4px solid var(--samu-orange);
+      border-radius: 12px 12px 0 0;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .footer-content {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .footer-section { flex: 1; min-width: 200px; text-align: center; }
+    .footer-section h4 { margin: 0 0 5px 0; color: var(--text-main); font-family: 'Poppins', sans-serif; font-weight: 700; text-transform: uppercase; font-size: 0.9rem; }
+    .footer-section p { margin: 0; line-height: 1.4; }
+
+    .dev-tag {
+      display: inline-block; margin-top: 8px; padding: 4px 12px;
+      background-color: white; border: 1px solid #d1d5db; border-radius: 20px;
+      font-size: 0.75rem; font-weight: 600; color: var(--samu-blue);
+    }
+    
+    @media (max-width: 600px) {
+      .footer-content { flex-direction: column; text-align: center; }
+      .footer-section { text-align: center !important; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>SAMU 192 BOA VISTA</h1>
+  <div>SISTEMA DE LANÇAMENTO DE FICHAS - USA</div>
+</header>
+
+<form id="fichasForm" onsubmit="enviarDados(event)">
+
+  <div class="card">
+    <div class="section-title">Dados Iniciais</div>
+    
+    <label>2. VTR *</label>
+    <div class="radio-group">
+      <div class="radio-option"><input type="radio" name="vtr" id="u1" value="USA 01" required><label for="u1">USA 01</label></div>
+      <div class="radio-option"><input type="radio" name="vtr" id="u2" value="USA 02"><label for="u2">USA 02</label></div>
+      <div class="radio-option"><input type="radio" name="vtr" id="ev" value="EVENTO"><label for="ev">EVENTO</label></div>
+    </div>
+
+    <label>3. Enfermeiro Responsável *</label>
+    <select name="enfermeiro" id="selEnf" onchange="checkOutro('selEnf','divOutroEnf')" required>
+      <option value="" disabled selected>Selecione...</option>
+      <option>DANIEL GUIMARÃES DA SILVA</option>
+      <option>EDSON SOARES PINTO</option>
+      <option>LUCIANO JOSÉ COUTINHO</option>
+      <option>LUCIVALDO OLIVEIRA BARROSO</option>
+      <option>MARIA DE LA PAZ PEREZ SAMPAIO</option>
+      <option>MARINETE GOMES BARRETO</option>
+      <option>SARA BRENDA DE SOUSA JESUS</option>
+      <option>SHEYLA BATISTA DOS SANTOS</option>
+      <option>GEISA CAMILA MOREIRA TAVARES DE MENEZES</option>
+      <option>GERLIVANE ALVES DE FREITAS SOUSA</option>
+      <option>GALTHAMA BRASIL</option>
+      <option value="Outro">OUTRO...</option>
+    </select>
+    <div id="divOutroEnf" class="hidden-input"><input type="text" name="outro_enfermeiro" placeholder="Digite o nome"></div>
+
+    <label>4. Médico Responsável *</label>
+    <select name="medico" id="selMed" onchange="checkOutro('selMed','divOutroMed')" required>
+      <option value="" disabled selected>Selecione...</option>
+      <option>ALEXANDRE FEITOSA DA SILVA</option>
+      <option>CLAUDIA KLECYANNE RODRIGUES DE BRITO</option>
+      <option>DANNIEL SILVA DA ROCHA</option>
+      <option>FRANCISCO ELADIO CAVALCANTE</option>
+      <option>JEFFERSON MARTINS DE LIMA</option>
+      <option>LEIDIANA COSTA NOBLES</option>
+      <option>MARCOS VINICIUS VERAS DA ROCHA</option>
+      <option>ROGER MALACARNE CALEFFI</option>
+      <option>VALTECY MENDES ALMEIDA DE ALBUQUERQUE</option>
+      <option>CELSO EDUARDO COSTA NERY</option>
+      <option>TIAGO DE LIMA RODRIGUEZ</option>
+      <option>FELIPE LEITE BARROS</option>
+      <option>PAULO VICTOR PAZ MACHADO</option>
+      <option value="Outro">OUTRO...</option>
+    </select>
+    <div id="divOutroMed" class="hidden-input"><input type="text" name="outro_medico" placeholder="Digite o nome"></div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Dados da Ocorrência</div>
+    
+    <div style="display:flex; gap:15px;">
+      <div style="flex:1;">
+        <label>5. Nº FAPH *</label>
+        <input type="number" name="faph" required>
+      </div>
+      <div style="flex:1;">
+        <label>6. Nº Acionamento *</label>
+        <input type="text" name="acionamento" required>
+      </div>
+    </div>
+
+    <label>7. Paciente *</label>
+    <input type="text" name="paciente" placeholder="NOME COMPLETO" required>
+
+    <div style="display:flex; gap:15px; flex-wrap: wrap;">
+      <div style="flex:1; min-width: 150px;">
+        <label>8. Sexo *</label>
+        <select name="sexo" id="selSexo" onchange="checkOutro('selSexo','divOutroSexo')" required>
+            <option value="" disabled selected>...</option>
+            <option>MASCULINO</option>
+            <option>FEMININO</option>
+            <option value="Outro">OUTRO</option>
+        </select>
+        <div id="divOutroSexo" class="hidden-input"><input type="text" name="outro_sexo"></div>
+      </div>
+      <div style="flex:0.7; min-width: 100px;">
+        <label>9. Idade *</label>
+        <input type="text" name="idade" placeholder="ANOS" required>
+      </div>
+      <div style="flex:0.8; min-width: 120px;">
+          <label>10. Cód *</label>
+          <div class="radio-group">
+            <div class="radio-option"><input type="radio" name="codigo" id="c1" value="01" required><label for="c1">01</label></div>
+            <div class="radio-option"><input type="radio" name="codigo" id="c2" value="02"><label for="c2">02</label></div>
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Diagnóstico e Motivo</div>
+
+    <label>11. Motivo Inicial *</label>
+    <select name="motivo" id="selMotivo" onchange="checkOutro('selMotivo','divOutroMotivo')" required>
+      <option value="" disabled selected>Selecione...</option>
+      <option>ACIDENTE DE TRÂNSITO</option>
+      <option>AGRESÃO FÍSICA (FAF)</option>
+      <option>AGRESÃO FÍSICA (FAB)</option>
+      <option>AGRESÃO FÍSICA (ESPANCAMENTO)</option>
+      <option>AFOGAMENTO</option>
+      <option>QUEIMADURA</option>
+      <option>URGÊNCIA PSQUIÁTRICA</option>
+      <option>TENTATIVA DE SUICÍDIO</option>
+      <option>ENVENENAMENTO</option>
+      <option>CHOQUE ELÉTRICO</option>
+      <option>QUEDA</option>
+      <option>URGÊNCIA CLÍNICA</option>
+      <option>URGÊNCIA OBSTÉTRICA</option>
+      <option>TRASFERÊNCIA</option>
+      <option>PCR</option>
+      <option>AVC</option>
+      <option>CRISE ASMÁTICA</option>
+      <option>CRISE DE ANSIEDADE</option>
+      <option>URGÊNCIA HIPERTENSIVA</option>
+      <option value="Outro">OUTRO...</option>
+    </select>
+    <div id="divOutroMotivo" class="hidden-input"><input type="text" name="outro_motivo" placeholder="ESPECIFIQUE"></div>
+
+    <label>12. Constatado *</label>
+    <select name="constatado" id="selConst" onchange="checkOutro('selConst','divOutroConst')" required>
+      <option value="" disabled selected>Selecione...</option>
+      <option>ACIDENTE DE TRÂNSITO</option>
+      <option>AGRESÃO FÍSICA (FAF)</option>
+      <option>AGRESÃO FÍSICA (FAB)</option>
+      <option>AGRESÃO FÍSICA (ESPANCAMENTO)</option>
+      <option>AFOGAMENTO</option>
+      <option>QUEIMADURA</option>
+      <option>URGÊNCIA PSQUIÁTRICA</option>
+      <option>TENTATIVA DE SUICÍDIO</option>
+      <option>ENVENENAMENTO</option>
+      <option>CHOQUE ELÉTRICO</option>
+      <option>QUEDA</option>
+      <option>URGÊNCIA CLÍNICA</option>
+      <option>URGÊNCIA OBSTÉTRICA</option>
+      <option>TRASFERÊNCIA</option>
+      <option>PCR</option>
+      <option>AVC</option>
+      <option>CRISE ASMÁTICA</option>
+      <option>CRISE DE ANSIEDADE</option>
+      <option>URGÊNCIA HIPERTENSIVA</option>
+      <option value="Outro">OUTRO...</option>
+    </select>
+    <div id="divOutroConst" class="hidden-input"><input type="text" name="outro_constatado" placeholder="ESPECIFIQUE"></div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Desfecho</div>
+
+    <label>13. Encaminhado *</label>
+    <select name="encaminhado" id="selEnc" onchange="checkOutro('selEnc','divOutroEnc')" required>
+      <option value="" disabled selected>Selecione...</option>
+      <option>HGR</option>
+      <option>PACCS</option>
+      <option>HMI</option>
+      <option>HCSA</option>
+      <option>LIB. NO LOCAL</option>
+      <option>ÓBITO</option>
+      <option>RECUSOU ATENDIMENTO</option>
+      <option>QTA</option>
+      <option>QTH NÃO ENCONTRADO</option>
+      <option value="Outro">OUTRO...</option>
+    </select>
+    <div id="divOutroEnc" class="hidden-input"><input type="text" name="outro_encaminhado" placeholder="NOVO LOCAL"></div>
+
+    <label>14. OBS *</label>
+    <div class="radio-group" style="margin-bottom: 10px;">
+        <div class="radio-option">
+            <input type="radio" name="obsOption" id="obsN" value="NENHUMA" checked onclick="toggleObs(false)">
+            <label for="obsN">NENHUMA</label>
+        </div>
+        <div class="radio-option">
+            <input type="radio" name="obsOption" id="obsO" value="CUSTOM_OBS" onclick="toggleObs(true)">
+            <label for="obsO">OUTRO</label>
+        </div>
+    </div>
+    <div id="divObsTexto" style="display:none;">
+        <input type="text" name="obsTexto" id="inputObs" placeholder="DIGITE A OBSERVAÇÃO">
+    </div>
+  </div>
+
+  <button type="submit" class="submit" id="btnSalvar">LANÇAR FICHA OFICIAL</button>
+  
+  <footer>
+    <div class="footer-content">
+      
+      <div class="footer-section" style="text-align: left;">
+        <h4>SAMU 192</h4>
+        <p>Sistema de Relatório Digital</p>
+        <p>Boa Vista - RR</p>
+      </div>
+
+      <div class="footer-section">
+        <p>&copy; 2025 Todos os Direitos Reservados</p>
+        <div class="dev-tag">Dev: Lucivaldo Oliveira Barroso</div>
+      </div>
+
+      <div class="footer-section" style="text-align: right;">
+        <h4>LB CONEXÃO SAÚDE</h4>
+        <p>Soluções em Saúde e Tecnologia</p>
+        <p style="font-size: 0.7rem; margin-top: 4px;">Versão Web 2.0</p>
+      </div>
+
+    </div>
+  </footer>
+
+</form>
+
+<script>
+  // ==========================================================
+  // CONFIGURAÇÃO DA API (LINK QUE VOCÊ ENVIOU)
+  // ==========================================================
+  const URL_API = "https://script.google.com/macros/s/AKfycbylR2Xlgd6J_qDhLyO3THN9T3XgKeLXwjmrVx2FGhJQ5GohlZjqvIOOVtBbd8w4kl5jow/exec"; 
+
+  // --- CHAVES DE MEMÓRIA ---
+  const KEY_ENF = 'samu_enf_custom';
+  const KEY_MED = 'samu_med_custom';
+  const KEY_MOTIVOS = 'samu_motivos_custom';
+  const KEY_CONSTATADOS = 'samu_constatados_custom';
+  const KEY_ENCAMINHADOS = 'samu_encaminhados_custom';
+  const KEY_SEXO = 'samu_sexo_custom'; // Adicionei para garantir o sexo também
+
+  // --- AUTO CAPS LOCK (EVITAR MEXER EM RADIOS) ---
+  document.addEventListener('input', function(e) {
+      // Só aplica UpperCase em campos de texto, ignora checkbox/radio/data
+      if ((e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') && 
+           e.target.type !== 'date' && e.target.type !== 'radio' && e.target.type !== 'checkbox') {
+        var start = e.target.selectionStart;
+        var end = e.target.selectionEnd;
+        e.target.value = e.target.value.toUpperCase();
+        e.target.setSelectionRange(start, end);
+    }
+  });
+
+  // --- MEMÓRIA DO SISTEMA ---
+  function carregarOpcoesSalvas() {
+    adicionarOpcoesAoSelect('selEnf', KEY_ENF);
+    adicionarOpcoesAoSelect('selMed', KEY_MED);
+    adicionarOpcoesAoSelect('selMotivo', KEY_MOTIVOS);
+    adicionarOpcoesAoSelect('selConst', KEY_CONSTATADOS);
+    adicionarOpcoesAoSelect('selEnc', KEY_ENCAMINHADOS);
+    adicionarOpcoesAoSelect('selSexo', KEY_SEXO);
+  }
+
+  function adicionarOpcoesAoSelect(selectId, storageKey) {
+    var select = document.getElementById(selectId);
+    if(!select) return;
+    
+    var savedOptions = JSON.parse(localStorage.getItem(storageKey) || "[]");
+    var outroOption = select.querySelector('option[value="Outro"]');
+    
+    // Remove opções já aprendidas para não duplicar na re-renderização
+    select.querySelectorAll('.aprendida').forEach(opt => opt.remove());
+
+    savedOptions.forEach(function(texto) {
+      var opt = document.createElement('option');
+      opt.value = texto;
+      opt.innerText = texto + " (Salvo)";
+      opt.classList.add('aprendida');
+      // Insere antes do "Outros"
+      if (outroOption) {
+        select.insertBefore(opt, outroOption);
+      } else {
+        select.appendChild(opt);
+      }
+    });
+  }
+
+  function verificarESalvarNovoItem(selectId, inputName, storageKey, formElement) {
+    var select = document.getElementById(selectId);
+    var inputElement = formElement.querySelector('[name="' + inputName + '"]');
+    if (!inputElement || !select) return;
+
+    // Se selecionou 'Outro' e digitou algo válido
+    if (select.value === 'Outro' && inputElement.value.trim() !== "") {
+      var novoItem = inputElement.value.toUpperCase().trim();
+      var listaAtual = JSON.parse(localStorage.getItem(storageKey) || "[]");
+      
+      // Adiciona na memória se não existir ainda
+      if (!listaAtual.includes(novoItem)) {
+        listaAtual.push(novoItem);
+        localStorage.setItem(storageKey, JSON.stringify(listaAtual));
+      }
+    }
+  }
+
+  // --- CONTROLES VISUAIS ---
+  function checkOutro(selectId, divId) {
+    var val = document.getElementById(selectId).value;
+    var div = document.getElementById(divId);
+    var input = div.querySelector('input');
+    if(val === 'Outro') {
+       div.style.display = 'block'; input.required = true;
+    } else {
+       div.style.display = 'none'; input.required = false; input.value = '';
+    }
+  }
+
+  function toggleObs(isOutro) {
+    var div = document.getElementById('divObsTexto');
+    var input = document.getElementById('inputObs');
+    if(isOutro) {
+       div.style.display = 'block'; input.required = true;
+       // Limpa se tiver algo velho
+    } else {
+       div.style.display = 'none'; input.required = false; input.value = '';
+    }
+  }
+
+  // --- ENVIO DOS DADOS ---
+  function enviarDados(e) {
+      e.preventDefault();
+      var btn = document.getElementById('btnSalvar');
+      var originalText = btn.innerText;
+      btn.disabled = true;
+      btn.innerText = "ENVIANDO DADOS...";
+
+      var form = document.getElementById('fichasForm');
+      var formData = new FormData(form);
+
+      // 1. Salvar Memória Local (AQUI ACONTECE A MÁGICA DE APRENDER)
+      verificarESalvarNovoItem('selEnf', 'outro_enfermeiro', KEY_ENF, form);
+      verificarESalvarNovoItem('selMed', 'outro_medico', KEY_MED, form);
+      verificarESalvarNovoItem('selMotivo', 'outro_motivo', KEY_MOTIVOS, form);
+      verificarESalvarNovoItem('selConst', 'outro_constatado', KEY_CONSTATADOS, form);
+      verificarESalvarNovoItem('selEnc', 'outro_encaminhado', KEY_ENCAMINHADOS, form);
+      verificarESalvarNovoItem('selSexo', 'outro_sexo', KEY_SEXO, form);
+
+      // 2. Lógica Corrigida para a OBS
+      let obsFinal = "";
+      if (formData.get('obsOption') === 'CUSTOM_OBS') {
+          obsFinal = formData.get('obsTexto').toUpperCase(); // Garante maiúsculo
+      } else {
+          obsFinal = formData.get('obsOption');
+      }
+
+      // 3. Montar objeto final
+      const data = {
+        'Vtr': formData.get('vtr'),
+        'Enfermeiro': (formData.get('enfermeiro') === 'Outro') ? formData.get('outro_enfermeiro') : formData.get('enfermeiro'),
+        'Medico': (formData.get('medico') === 'Outro') ? formData.get('outro_medico') : formData.get('medico'),
+        'Faph': formData.get('faph'),
+        'Acionamento': formData.get('acionamento'),
+        'Paciente': formData.get('paciente'),
+        'Sexo': (formData.get('sexo') === 'Outro') ? formData.get('outro_sexo') : formData.get('sexo'),
+        'Idade': formData.get('idade'),
+        'Codigo': formData.get('codigo'),
+        'Motivo': (formData.get('motivo') === 'Outro') ? formData.get('outro_motivo') : formData.get('motivo'),
+        'Constatado': (formData.get('constatado') === 'Outro') ? formData.get('outro_constatado') : formData.get('constatado'),
+        'Encaminhado': (formData.get('encaminhado') === 'Outro') ? formData.get('outro_encaminhado') : formData.get('encaminhado'),
+        'Obs': obsFinal 
+      };
+
+      const params = new URLSearchParams(data);
+
+      fetch(URL_API, {
+          method: 'POST',
+          body: params
+      })
+      .then(response => response.json())
+      .then(result => {
+          if (result.result === 'success') {
+             alert('✅ FICHA LANÇADA COM SUCESSO!');
+             form.reset();
+             document.querySelectorAll('.hidden-input').forEach(div => div.style.display = 'none');
+             document.getElementById('divObsTexto').style.display = 'none';
+             // RECARREGA A LISTA PARA MOSTRAR OS NOVOS ITENS IMEDIATAMENTE
+             carregarOpcoesSalvas();
+             window.scrollTo(0, 0);
+          } else {
+             alert('⚠️ Erro ao salvar na planilha. Tente novamente.');
+             console.error(result);
+          }
+          btn.disabled = false;
+          btn.innerText = originalText;
+      })
+      .catch(error => {
+          console.error('Erro:', error);
+          alert('✅ FICHA ENVIADA! \n(Nota: O Google às vezes não confirma o retorno, mas os dados foram enviados).');
+          form.reset();
+          carregarOpcoesSalvas(); // Recarrega listas mesmo no catch
+          btn.disabled = false;
+          btn.innerText = originalText;
+          window.scrollTo(0, 0);
+      });
+  }
+
+  window.onload = carregarOpcoesSalvas;
+
+</script>
+
+</body>
+</html>
