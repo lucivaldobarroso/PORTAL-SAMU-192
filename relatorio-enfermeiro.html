@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Relatório Enfermeiro | SAMU 192</title>
+  <title>Acesso Restrito | SAMU 192</title>
   
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
 
   <style>
-    /* --- TEMA CLARO (LIGHT MODE) --- */
+    /* --- TEMA GLOBAL --- */
     :root {
       --bg-color: #f3f4f6; --card-bg: #ffffff; --text-main: #1f2937; --text-muted: #6b7280;
       --samu-orange: #f97316; --samu-red: #ef4444; --samu-blue: #0ea5e9;
@@ -17,237 +17,247 @@
     }
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-main); margin: 0; padding: 15px; line-height: 1.5; }
-    
-    header { text-align: center; margin-bottom: 25px; padding: 25px; background: var(--card-bg); border-radius: 16px; box-shadow: var(--shadow); border-bottom: 4px solid var(--samu-orange); transition: transform 0.3s ease; }
-    header:hover { transform: translateY(-2px); }
+
+    /* --- CABEÇALHO --- */
+    header { text-align: center; margin-bottom: 20px; padding: 25px; background: var(--card-bg); border-radius: 16px; box-shadow: var(--shadow); border-bottom: 4px solid var(--samu-orange); }
     header h1 { font-family: 'Poppins', sans-serif; font-size: 1.4rem; margin: 0; color: var(--samu-red); text-transform: uppercase; font-weight: 700; }
     header div { font-size: 0.8rem; color: var(--text-muted); margin-top: 5px; font-weight: 500; }
-    
-    .card { background-color: var(--card-bg); padding: 25px; border-radius: var(--border-radius); margin-bottom: 20px; box-shadow: var(--shadow); border: 1px solid var(--border-color); transition: transform 0.3s ease, box-shadow 0.3s ease; }
-    .card:hover { transform: var(--hover-lift); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+
+    /* --- BARRA DE USUÁRIO LOGADO (NOVO) --- */
+    #barraUsuario {
+      display: none; /* Começa invisível */
+      background-color: #e0f2fe;
+      color: #0369a1;
+      padding: 10px 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-align: right;
+      border: 1px solid #bae6fd;
+      animation: fadeIn 0.5s ease;
+    }
+    #barraUsuario span { text-transform: uppercase; }
+
+    /* --- ESTILOS DE CARDS E INPUTS --- */
+    .card { background-color: var(--card-bg); padding: 25px; border-radius: var(--border-radius); margin-bottom: 20px; box-shadow: var(--shadow); border: 1px solid var(--border-color); }
     
     label { display: block; margin-top: 18px; color: var(--text-main); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; font-family: 'Poppins', sans-serif; margin-bottom: 6px; }
-    select, input, textarea { width: 100%; padding: 14px; background-color: var(--input-bg); border: 1px solid #d1d5db; border-radius: 8px; color: var(--text-main); font-size: 1rem; font-family: 'Inter', sans-serif; outline: none; transition: all 0.2s ease; text-transform: uppercase; cursor: pointer; }
-    select:hover, input:hover, textarea:hover { background-color: #fff; border-color: #9ca3af; }
-    select:focus, input:focus, textarea:focus { border-color: var(--samu-orange); background-color: #fff; box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15); transform: scale(1.01); }
+    select, input, textarea { width: 100%; padding: 14px; background-color: var(--input-bg); border: 1px solid #d1d5db; border-radius: 8px; color: var(--text-main); font-size: 1rem; font-family: 'Inter', sans-serif; outline: none; transition: all 0.2s ease; }
+    input[type="text"], input[type="password"] { text-transform: none; } 
     
-    .hidden-input { display: none; margin-top: 8px; animation: fadeIn 0.3s ease; }
-    .hidden-input input { border-left: 4px solid var(--samu-orange); background-color: #fff7ed; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
-    
-    option.aprendida { background-color: #f0fdf4; color: #15803d; font-weight: 600; }
-    
+    select:focus, input:focus, textarea:focus { border-color: var(--samu-orange); background-color: #fff; box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15); }
+
+    /* --- BOTÕES --- */
+    button.submit { width: 100%; background: linear-gradient(to right, var(--samu-red), var(--samu-orange)); color: white; border: none; padding: 20px; font-size: 1.1rem; font-family: 'Poppins', sans-serif; font-weight: 600; border-radius: 12px; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 6px rgba(239, 68, 68, 0.25); transition: all 0.3s ease; }
+    button.submit:hover { transform: translateY(-3px); filter: brightness(1.1); }
+    button.submit:disabled { background: #9ca3af; box-shadow: none; opacity: 0.7; cursor: not-allowed; }
+
+    /* --- TELA DE LOGIN --- */
+    #telaLogin { max-width: 450px; margin: 0 auto; margin-top: 40px; }
+    .login-icon { text-align: center; font-size: 3rem; margin-bottom: 10px; }
+
+    /* --- TELA DE RELATÓRIO --- */
+    #telaRelatorio { display: none; animation: fadeIn 0.5s ease; }
+
+    /* --- OUTROS ELEMENTOS --- */
+    .hidden-input { display: none; margin-top: 8px; }
     .ai-assistant-panel { background-color: #f0f9ff; border: 1px solid #bae6fd; border-radius: 12px; padding: 20px; margin-top: 10px; }
     .ai-header { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; color: #0284c7; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 0.9rem; }
     .ai-tools { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 15px; }
-    .ai-btn { background: #fff; border: 1px solid #0ea5e9; color: #0284c7; padding: 8px 14px; border-radius: 50px; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-    .ai-btn:hover { background-color: #0ea5e9; color: white; transform: translateY(-2px); box-shadow: 0 4px 6px rgba(14, 165, 233, 0.2); }
-    .ai-btn:active { transform: scale(0.95); background: #e0f2fe; }
+    .ai-btn { background: #fff; border: 1px solid #0ea5e9; color: #0284c7; padding: 8px 14px; border-radius: 50px; font-size: 0.75rem; font-weight: 600; cursor: pointer; }
+    .ai-btn:hover { background-color: #0ea5e9; color: white; }
     .ai-btn.danger { border-color: #ef4444; color: #ef4444; }
     .ai-btn.danger:hover { background-color: #ef4444; color: white; }
-    
-    textarea { min-height: 300px; line-height: 1.6; resize: vertical; background-color: #fff; border-color: #bae6fd; }
-    
-    button.submit { width: 100%; background: linear-gradient(to right, var(--samu-red), var(--samu-orange)); color: white; border: none; padding: 20px; font-size: 1.1rem; font-family: 'Poppins', sans-serif; font-weight: 600; border-radius: 12px; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 6px rgba(239, 68, 68, 0.25); letter-spacing: 1px; transition: all 0.3s ease; }
-    button.submit:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(239, 68, 68, 0.4); filter: brightness(1.1); }
-    button.submit:disabled { background: #9ca3af; box-shadow: none; opacity: 0.7; }
-    
-    footer { margin-top: 60px; background-color: #e5e7eb; border-top: 4px solid var(--samu-orange); color: var(--text-muted); font-size: 0.85rem; display: flex; flex-direction: column; border-radius: 16px 16px 0 0; box-shadow: 0 -4px 10px rgba(0,0,0,0.05); }
-    .footer-content { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 20px; max-width: 900px; margin: 0 auto; padding: 40px 20px; width: 100%; }
-    .footer-section { flex: 1; min-width: 200px; text-align: center; }
-    .footer-section h4 { margin: 0 0 8px 0; color: var(--text-main); font-family: 'Poppins', sans-serif; font-weight: 700; text-transform: uppercase; font-size: 0.9rem; }
-    .footer-section p { margin: 0; line-height: 1.6; }
-    .dev-tag { display: inline-block; margin-top: 8px; padding: 5px 15px; background-color: white; border: 1px solid #d1d5db; border-radius: 20px; font-size: 0.75rem; font-weight: 600; color: var(--samu-blue); transition: transform 0.2s; }
-    .dev-tag:hover { transform: scale(1.05); border-color: var(--samu-blue); }
-    .footer-legal { width: 100%; background-color: #d1d5db; padding: 15px 20px; text-align: center; font-size: 0.75rem; color: #4b5563; border-top: 1px solid #bbb; }
-    .footer-legal p { max-width: 800px; margin: 0 auto; line-height: 1.5; }
-    @media (max-width: 600px) { .footer-content { flex-direction: column; text-align: center; } .footer-section { text-align: center !important; margin-bottom: 20px; } }
+    textarea { min-height: 300px; line-height: 1.6; resize: vertical; text-transform: uppercase; }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   </style>
 </head>
 <body>
 
-<header>
-  <h1>SAMU 192 BOA VISTA</h1>
-  <div>RELATÓRIO DO ENFERMEIRO DE PLANTÃO</div>
-</header>
-
-<form id="reportForm" onsubmit="enviarDados(event)">
-
-  <div class="card">
-    <div class="section-label"> DADOS DO PLANTÃO </div>
-
-    <label>DATA *</label>
-    <input type="date" name="dataPlantao" required>
-
-    <label>HORÁRIO *</label>
-    <select name="horario" id="selHorario" onchange="checkOutro('selHorario','divHorario')" required>
-      <option value="" disabled selected>Selecione...</option>
-      <option>06:00 AS 12:00</option>
-      <option>12:00 AS 18:00</option>
-      <option>18:00 AS 06:00</option>
-      <option>06:00 AS 18:00</option>
-      <option>19:00 AS 01:00 (EVENTO)</option>
-      <option value="OUTRO">OUTRO...</option>
-    </select>
-    <div id="divHorario" class="hidden-input">
-      <input type="text" name="horario_custom" placeholder="Digite o horário">
+<div id="telaLogin">
+  <header>
+    <h1>ACESSO RESTRITO</h1>
+    <div>IDENTIFICAÇÃO DO SERVIDOR</div>
+  </header>
+  
+  <form onsubmit="realizarLogin(event)">
+    <div class="card">
+      <div class="login-icon">🔒</div>
+      
+      <label>USUÁRIO</label>
+      <input type="text" id="loginUsuario" placeholder="Digite seu usuário" required>
+      
+      <label>SENHA</label>
+      <input type="password" id="loginSenha" placeholder="Digite sua senha" required>
+      
+      <button type="submit" class="submit" id="btnLogin">ENTRAR NO SISTEMA</button>
+      <p style="text-align: center; color: #9ca3af; font-size: 0.8rem; margin-top: 15px;">SAMU 192 - Boa Vista</p>
     </div>
+  </form>
+</div>
 
-    <label>VTR *</label>
-    <select name="vtr" id="selVtr" onchange="checkOutro('selVtr','divVtr')" required style="border-left: 4px solid var(--samu-orange);">
-      <option value="" disabled selected>Selecione a Unidade...</option>
-      <option>USA 01</option>
-      <option>USA 02</option>
-      <option>EVENTO</option>
-      <option value="OUTRO">OUTRO...</option>
-    </select>
-    <div id="divVtr" class="hidden-input">
-      <input type="text" name="vtr_custom" placeholder="Digite a unidade">
-    </div>
+<div id="telaRelatorio">
+  <header>
+    <h1>SAMU 192 BOA VISTA</h1>
+    <div>RELATÓRIO DO ENFERMEIRO DE PLANTÃO</div>
+  </header>
 
-    <label>ENFERMEIRO *</label>
-    <select name="respPreenchimento" id="selEnf" class="list-enfermeiros" onchange="checkOutro('selEnf','divEnf')" required>
+  <div id="barraUsuario">
+    👤 LOGADO COMO: <span id="nomeUsuarioDisplay">...</span>
+  </div>
+
+  <form id="reportForm" onsubmit="enviarDados(event)">
+    <div class="card">
+      <div class="section-label" style="font-weight: 700; color: var(--samu-blue); margin-bottom: 15px;">DADOS DO PLANTÃO</div>
+
+      <label>DATA *</label>
+      <input type="date" name="dataPlantao" required>
+
+      <label>HORÁRIO *</label>
+      <select name="horario" id="selHorario" onchange="checkOutro('selHorario','divHorario')" required>
+        <option value="" disabled selected>Selecione...</option>
+        <option>06:00 AS 12:00</option>
+        <option>12:00 AS 18:00</option>
+        <option>18:00 AS 06:00</option>
+        <option>06:00 AS 18:00</option>
+        <option>19:00 AS 01:00 (EVENTO)</option>
+        <option value="OUTRO">OUTRO...</option>
       </select>
-    <div id="divEnf" class="hidden-input">
-      <input type="text" name="resp_custom" placeholder="Digite seu nome">
-    </div>
-
-    <label>COREN *</label>
-    <select name="coren" id="selCoren" onchange="checkOutro('selCoren','divCoren')" required>
-      <option value="" disabled selected>Selecione...</option>
-      <option>260.099</option>
-      <option>466.133</option>
-      <option>349.953</option>
-      <option>273.275</option>
-      <option>265.710</option>
-      <option>115.223</option>
-      <option>349.963</option>
-      <option>662.963</option>
-      <option>248.169</option>
-      <option>354.666</option>
-      <option>618.059</option>
-      <option value="OUTRO">OUTRO...</option>
-    </select>
-    <div id="divCoren" class="hidden-input">
-      <input type="text" name="coren_custom" placeholder="Digite o COREN">
-    </div>
-  </div>
-
-  <div class="card" style="border-top: 4px solid #0ea5e9;">
-    <div class="ai-header"><span>ASSISTENTE DE PREENCHIMENTO</span></div>
-    <div class="ai-assistant-panel">
-      <div class="ai-tools">
-        <div class="ai-btn" onclick="iaGerar('inicio')">📄 Início</div>
-        <div class="ai-btn" onclick="iaGerar('check')">✅ Checklist</div>
-        <div class="ai-btn" onclick="iaGerar('intercorrencia')">⚠️ Ocorrência</div>
-        <div class="ai-btn" onclick="iaGerar('final')">🏁 Finalizar</div>
-        <div class="ai-btn danger" onclick="limparTexto()">🗑️ Limpar</div>
+      <div id="divHorario" class="hidden-input">
+        <input type="text" name="horario_custom" placeholder="DIGITE O HORÁRIO">
       </div>
-      <textarea name="relatorioTexto" id="txtRelatorio" placeholder="O assistente ajudará a escrever seu relatório aqui..." required></textarea>
-    </div>
-  </div>
 
-  <button type="submit" class="submit" id="btnSalvar">ENVIAR RELATÓRIO OFICIAL</button>
+      <label>VTR *</label>
+      <select name="vtr" id="selVtr" onchange="checkOutro('selVtr','divVtr')" required style="border-left: 4px solid var(--samu-orange);">
+        <option value="" disabled selected>Selecione a Unidade...</option>
+        <option>USA 01</option>
+        <option>USA 02</option>
+        <option>EVENTO</option>
+        <option value="OUTRO">OUTRO...</option>
+      </select>
+      <div id="divVtr" class="hidden-input">
+        <input type="text" name="vtr_custom" placeholder="DIGITE A UNIDADE">
+      </div>
+
+      <label>ENFERMEIRO (LOGADO) *</label>
+      <select name="respPreenchimento" id="selEnf" required style="background-color: #eff6ff;">
+         <option value="" disabled selected>Aguardando Login...</option>
+      </select>
+      <div id="divEnf" class="hidden-input"><input type="text" name="resp_custom"></div>
+
+      <label>COREN (AUTO) *</label>
+      <input type="text" name="coren" id="inputCoren" readonly style="background-color: #eff6ff; font-weight: bold; color: #555;">
+      <input type="hidden" name="coren_custom"> 
+
+    </div>
+
+    <div class="card" style="border-top: 4px solid #0ea5e9;">
+      <div class="ai-header"><span>ASSISTENTE DE PREENCHIMENTO</span></div>
+      <div class="ai-assistant-panel">
+        <div class="ai-tools">
+          <div class="ai-btn" onclick="iaGerar('inicio')">📄 Início</div>
+          <div class="ai-btn" onclick="iaGerar('check')">✅ Checklist</div>
+          <div class="ai-btn" onclick="iaGerar('intercorrencia')">⚠️ Ocorrência</div>
+          <div class="ai-btn" onclick="iaGerar('final')">🏁 Finalizar</div>
+          <div class="ai-btn danger" onclick="limparTexto()">🗑️ Limpar</div>
+        </div>
+        <textarea name="relatorioTexto" id="txtRelatorio" placeholder="O assistente ajudará a escrever seu relatório aqui..." required></textarea>
+      </div>
+    </div>
+
+    <button type="submit" class="submit" id="btnSalvar">ENVIAR RELATÓRIO OFICIAL</button>
+  </form>
   
   <footer>
-    <div class="footer-content">
-      
-      <div class="footer-section" style="text-align: left;">
-        <h4>SAMU 192</h4>
-        <p>Sistema de Relatório Digital</p>
-        <p>Boa Vista - RR</p>
-      </div>
-
-      <div class="footer-section">
-        <div class="dev-tag">Dev: Lucivaldo Barroso</div>
-      </div>
-
-      <div class="footer-section" style="text-align: right;">
-        <h4>LB CONEXÃO SAÚDE</h4>
-        <p>Soluções em Saúde e Tecnologia</p>
-        <p style="font-size: 0.7rem; margin-top: 4px;">Versão Web 2.0</p>
-      </div>
-
-    </div>
-
-    <div class="footer-legal">
-        <p>
-            © 2025 Todos os Direitos Reservados. <br>
-            <em>Aviso: Este é um portal de recursos de iniciativa particular. Os links externos direcionam para sistemas internos do SAMU 192 Boa Vista.</em>
-        </p>
+    <div style="text-align: center; padding: 20px; font-size: 0.8rem; color: #6b7280;">
+      © 2025 SAMU 192 Boa Vista - Sistema Integrado
     </div>
   </footer>
-
-</form>
+</div>
 
 <script>
   // ==========================================================
-  // CONFIGURAÇÃO DA NOVA URL (VERIFIQUE SE ESTÁ CERTA)
+  // URL DO SCRIPT 
   // ==========================================================
-  const URL_API = "https://script.google.com/macros/s/AKfycbw56LLTlyxEcWNYRj5r2S3RQ0xc8C6k52WcpU0rpqG2UPz0z2vgumgK54snUrOCQuYvTA/exec"; 
+  const URL_API = "https://script.google.com/macros/s/AKfycbwP0qct-TK43CPLqOZ72QCwxAbR-nt1IAH9QO97M91xr-gYSD8q18UITeh3Ep1tN2P3fQ/exec"; 
 
-  // --- CAPS LOCK AUTO ---
+  // --- LOGICA DE LOGIN ---
+  function realizarLogin(e) {
+      e.preventDefault();
+      var btn = document.getElementById('btnLogin');
+      var originalText = btn.innerText;
+      
+      btn.disabled = true;
+      btn.innerText = "VERIFICANDO...";
+
+      var usuario = document.getElementById('loginUsuario').value.trim();
+      var senha = document.getElementById('loginSenha').value.trim();
+
+      var params = new URLSearchParams();
+      params.append('action', 'login');
+      params.append('usuario', usuario);
+      params.append('senha', senha);
+
+      fetch(URL_API, { method: 'POST', body: params })
+      .then(response => response.json())
+      .then(data => {
+          if (data.result === 'success') {
+              // SUCESSO - SEM ALERT, TRANSIÇÃO DIRETA
+              
+              // 1. Troca as telas
+              document.getElementById('telaLogin').style.display = 'none';
+              document.getElementById('telaRelatorio').style.display = 'block';
+
+              // 2. Mostra a barra de topo com o nome
+              document.getElementById('barraUsuario').style.display = 'block';
+              document.getElementById('nomeUsuarioDisplay').innerText = data.nome;
+
+              // 3. Preenche os dados automáticos
+              preencherDadosUsuario(data.nome, data.coren);
+              
+              window.scrollTo(0,0);
+          } else {
+              // ERRO NO LOGIN (Aqui mantemos o alerta para avisar o erro)
+              alert('❌ Acesso Negado: ' + (data.error || 'Usuário/Senha incorretos'));
+              btn.disabled = false;
+              btn.innerText = originalText;
+          }
+      })
+      .catch(error => {
+          console.error('Erro:', error);
+          alert('Erro de conexão ao tentar logar.');
+          btn.disabled = false;
+          btn.innerText = originalText;
+      });
+  }
+
+  function preencherDadosUsuario(nome, coren) {
+      // Configura o Nome do Enfermeiro no Select
+      var selEnf = document.getElementById('selEnf');
+      selEnf.innerHTML = ""; // Limpa opções anteriores
+      var opt = document.createElement('option');
+      opt.value = nome;
+      opt.innerText = nome;
+      opt.selected = true;
+      selEnf.appendChild(opt);
+
+      // Configura o Coren no Input
+      var inputCoren = document.getElementById('inputCoren');
+      inputCoren.value = coren;
+  }
+
+  // --- LOGICA DO FORMULÁRIO ---
+  
   document.addEventListener('input', function(e) {
-    if ((e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') && e.target.type !== 'date') {
+    if ((e.target.tagName === 'TEXTAREA') || (e.target.tagName === 'INPUT' && e.target.type === 'text' && e.target.id !== 'loginUsuario')) {
         var start = e.target.selectionStart;
         var end = e.target.selectionEnd;
         e.target.value = e.target.value.toUpperCase();
         e.target.setSelectionRange(start, end);
     }
   });
-
-  // --- LISTA DE ENFERMEIROS PADRÃO ---
-  const ENFERMEIROS = ["DANIEL GUIMARÃES DA SILVA", "EDSON SOARES PINTO", "GEISA CAMILA MOREIRA TAVARES DE MENEZES", "GERLIVANE ALVES DE FREITAS SOUSA", "LUCIANO JOSÉ COUTINHO", "LUCIVALDO OLIVEIRA BARROSO", "MARIA DE LA PAZ PEREZ SAMPAIO", "MARINETE GOMES BARRETO", "SARA BRENDA DE SOUSA JESUS", "SHEYLA BATISTA DOS SANTOS", "GALTHAMA BRASIL"];
-
-  const KEY_HORARIO = 'memoria_horarios';
-  const KEY_VTR = 'memoria_vtrs';
-  const KEY_ENF = 'memoria_enfermeiros';
-  const KEY_COREN = 'memoria_corens';
-
-  window.onload = function() {
-    const select = document.querySelector('.list-enfermeiros');
-    select.innerHTML = '<option value="" disabled selected>SELECIONE...</option>';
-    ENFERMEIROS.forEach(nome => {
-        let opt = document.createElement('option');
-        opt.value = nome; opt.innerText = nome;
-        select.appendChild(opt);
-    });
-    let optOutro = document.createElement('option');
-    optOutro.value = "OUTRO"; optOutro.innerText = "OUTRO...";
-    select.appendChild(optOutro);
-
-    carregarMemoria('selHorario', KEY_HORARIO);
-    carregarMemoria('selVtr', KEY_VTR);
-    carregarMemoria('selEnf', KEY_ENF);
-    carregarMemoria('selCoren', KEY_COREN);
-  };
-
-  function carregarMemoria(selectId, key) {
-    const select = document.getElementById(selectId);
-    const salvos = JSON.parse(localStorage.getItem(key) || "[]");
-    const optionOutro = select.querySelector('option[value="OUTRO"]');
-    select.querySelectorAll('.aprendida').forEach(el => el.remove());
-    salvos.forEach(item => {
-      let opt = document.createElement('option');
-      opt.value = item; 
-      opt.innerText = item + " (SALVO)";
-      opt.classList.add('aprendida');
-      select.insertBefore(opt, optionOutro);
-    });
-  }
-
-  function salvarNovoItem(selectId, inputName, key, form) {
-    const select = document.getElementById(selectId);
-    const input = form.querySelector('[name="'+inputName+'"]');
-    if(select.value === 'OUTRO' && input && input.value.trim() !== "") {
-      const novoItem = input.value.toUpperCase().trim();
-      const salvos = JSON.parse(localStorage.getItem(key) || "[]");
-      if(!salvos.includes(novoItem)) {
-        salvos.push(novoItem);
-        localStorage.setItem(key, JSON.stringify(salvos));
-      }
-    }
-  }
 
   function checkOutro(selectId, divId) {
     var val = document.getElementById(selectId).value;
@@ -286,60 +296,43 @@
       btn.innerText = "ENVIANDO DADOS...";
 
       var form = document.getElementById('reportForm');
-
-      // Salva memórias
-      salvarNovoItem('selHorario', 'horario_custom', KEY_HORARIO, form);
-      salvarNovoItem('selVtr', 'vtr_custom', KEY_VTR, form);
-      salvarNovoItem('selEnf', 'resp_custom', KEY_ENF, form);
-      salvarNovoItem('selCoren', 'coren_custom', KEY_COREN, form);
-
       const formData = new FormData(form);
       const data = {};
+      
       formData.forEach((value, key) => data[key] = value);
 
-      // Tratamento para "OUTRO"
       const dadosFinais = {
+          'action': 'salvar',
           'Data': data.dataPlantao,
           'Horario': (data.horario === 'OUTRO') ? data.horario_custom : data.horario,
           'VTR': (data.vtr === 'OUTRO') ? data.vtr_custom : data.vtr,
-          'Enfermeiro': (data.respPreenchimento === 'OUTRO') ? data.resp_custom : data.respPreenchimento,
-          'Coren': (data.coren === 'OUTRO') ? data.coren_custom : data.coren,
-          'Relatorio': data.relatorioTexto,
-          'Data do Envio': new Date().toLocaleString()
+          'Enfermeiro': data.respPreenchimento,
+          'Coren': data.coren,
+          'Relatorio': data.relatorioTexto
       };
 
-      // Importante: URLSearchParams para o Google aceitar
       const params = new URLSearchParams(dadosFinais);
 
       fetch(URL_API, {
           method: 'POST',
           body: params
       })
-      .then(response => response.json()) 
+      .then(response => response.json())
       .then(data => {
           if (data.result === 'success') {
-              alert('✅ RELATÓRIO ENVIADO COM SUCESSO!\n(PDF Gerado no Drive)');
-              
-              form.reset();
-              document.querySelectorAll('.hidden-input').forEach(el => el.style.display = 'none');
-              carregarMemoria('selHorario', KEY_HORARIO);
-              carregarMemoria('selVtr', KEY_VTR);
-              carregarMemoria('selEnf', KEY_ENF);
-              carregarMemoria('selCoren', KEY_COREN);
-
+              alert('✅ RELATÓRIO ENVIADO COM SUCESSO!');
+              document.getElementById('txtRelatorio').value = "";
               window.scrollTo(0,0);
           } else {
-              alert('⚠️ Erro ao salvar: ' + (data.error || 'Erro desconhecido'));
-              console.error(data);
+              alert('⚠️ Erro ao salvar na planilha: ' + (data.error || 'Erro desconhecido'));
           }
           btn.disabled = false;
           btn.innerText = originalText;
       })
       .catch((error) => {
           console.error('Erro:', error);
-          // O Google às vezes dá erro de CORS mesmo salvando
-          alert('✅ RELATÓRIO ENVIADO! \n(O Google aceitou os dados, verifique a planilha)');
-          form.reset();
+          alert('✅ RELATÓRIO ENVIADO! \n(Confirmado envio, verifique a planilha)');
+          document.getElementById('txtRelatorio').value = "";
           btn.disabled = false;
           btn.innerText = originalText;
       });
