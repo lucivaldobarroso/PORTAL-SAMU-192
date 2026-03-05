@@ -125,3 +125,4 @@
 - Warnings de chunk grande no Vite nao bloqueiam deploy se o build finalizou com `built`.
 - Erro `'vite' nao e reconhecido` indica dependencia faltando; instalar dependencias antes do build.
 - Em Windows/PowerShell, usar comandos compativeis (`Remove-Item -Recurse -Force`) para limpeza de dependencias quando necessario.
+-
