@@ -207,6 +207,22 @@
             transition: all 0.2s;
         }
 
+        .input-group textarea {
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            min-height: 12rem;
+            padding: 1rem;
+            border-radius: 1rem;
+            border: 1px solid #e2e8f0;
+            background: #f8fafc;
+            font-size: 0.875rem;
+            font-weight: 600;
+            line-height: 1.5;
+            resize: vertical;
+            transition: all 0.2s;
+        }
+
         .dark .input-group input {
             background: rgba(255, 255, 255, 0.05);
             border-color: rgba(255, 255, 255, 0.1);
@@ -214,6 +230,12 @@
         }
 
         .dark .input-group select {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .dark .input-group textarea {
             background: rgba(255, 255, 255, 0.05);
             border-color: rgba(255, 255, 255, 0.1);
             color: white;
@@ -229,6 +251,65 @@
             outline: none;
             border-color: #1B365D;
             box-shadow: 0 0 0 2px rgba(27, 54, 93, 0.2);
+        }
+
+        .input-group textarea:focus {
+            outline: none;
+            border-color: #1B365D;
+            box-shadow: 0 0 0 2px rgba(27, 54, 93, 0.2);
+        }
+
+        .neu-admin-panel {
+            font-size: 15px;
+        }
+
+        .neu-admin-panel .input-group {
+            margin-bottom: 0;
+        }
+
+        .neu-admin-panel .input-group label {
+            font-size: 11px;
+            line-height: 1.35;
+        }
+
+        .neu-admin-panel .input-group input,
+        .neu-admin-panel .input-group select,
+        .neu-admin-panel .input-group textarea {
+            font-size: 15px;
+        }
+
+        .neu-admin-panel .neu-plan-grid .input-group {
+            width: 100%;
+            min-width: 0;
+        }
+
+        .neu-admin-panel .neu-plan-grid textarea {
+            display: block;
+            width: 100%;
+            min-height: 14rem;
+        }
+
+        .neu-admin-panel .neu-period-card {
+            display: flex;
+            flex-direction: column;
+            gap: 0.55rem;
+        }
+
+        .neu-admin-panel .neu-period-card > span,
+        .neu-admin-panel .neu-period-card > p {
+            display: block;
+            margin: 0;
+        }
+
+        .neu-admin-panel .neu-period-card > span {
+            margin-left: 0 !important;
+            width: fit-content;
+        }
+
+        .neu-admin-panel .neu-period-card > button {
+            width: fit-content;
+            margin-left: 0 !important;
+            margin-right: 0.5rem;
         }
 
         #btnEntrar {
@@ -311,7 +392,7 @@
   }
 }
 </script>
-  <script type="module" crossorigin src="/assets/index-DRqk9gwv.js"></script>
+  <script type="module" crossorigin src="/assets/index-BaSeXtYO.js"></script>
 </head>
 
 <body class="transition-colors duration-500 font-sans">
